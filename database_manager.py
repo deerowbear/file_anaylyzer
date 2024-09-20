@@ -5,11 +5,9 @@ import os
 
 sqlite3.Binary = os.getcwd() + os.sep + "binary" + os.sep + "exiftool" + os.sep + "exiftool.exe"
 
-logging.basicConfig(filename='database_manager.log',
-                    filemode='a',
-                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                    datefmt='%H:%M:%S',
-                    level=logging.INFO)
+
+logger = logging.getLogger(__name__) 
+
 class DatabaseManager:
     def create_tables():
         sql_statements = [ 
@@ -34,7 +32,7 @@ class DatabaseManager:
                     cursor.execute(statement)
                 conn.commit()
         except sqlite3.Error as e:
-            logging.error(e)
+            logger.error(e)
 
     def write_date(values: str):
         try:
@@ -45,7 +43,7 @@ class DatabaseManager:
                 cursor.execute(sql, (values))
                 conn.commit()
         except sqlite3.Error as e:
-            logging.error(e)
+            logger.error(e)
 
     def fetch_row(file_name: str):
         try:
@@ -57,6 +55,6 @@ class DatabaseManager:
                 conn.commit()
                 return [dict(zip([key[0] for key in cursor.description], row)) for row in rows]
         except sqlite3.Error as e:
-            logging.error(e)
+            logger.error(e)
             return ''
 
